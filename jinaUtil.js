@@ -1,4 +1,4 @@
-export default class jinaUtil {
+export class jinaUtil {
   static confirm(msg, title = "پرسش", ok = "تایید", cancel = "انصراف") {
     var customDialog = DevExpress.ui.dialog.custom({
       rtlEnabled: true,

@@ -1,6 +1,6 @@
-import jinaUtil from "./jinaUtil.js"
+import { jinaUtil } from "./jinaUtil.js"
 
-export default class jinaGrid {
+export class jinaGrid {
   opt; grid; popup; form; store; id;
   wait = true;
 

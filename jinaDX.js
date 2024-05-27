@@ -1,6 +1,6 @@
-import jinaGrid from "./jinaGrid.js";
-import jinaUtil from "./jinaUtil.js";
-export default class jinaDX {
+import { jinaGrid } from "./jinaGrid.js";
+import { jinaUtil } from "./jinaUtil.js";
+export class jinaDX {
   static requiredText = "وارد نشده";
   static DropDownTypes = {
     tree:

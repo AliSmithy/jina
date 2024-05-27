@@ -1,7 +1,8 @@
 {
   "name": "jina",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "this package is for my own use at this time",
+  "types": "jina.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
