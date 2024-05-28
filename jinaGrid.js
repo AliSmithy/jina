@@ -70,13 +70,15 @@ export class jinaGrid {
             args[i] = JSON.stringify(loadOptions[i]);
           }
         });
-        jinaUtil.getJSON(self.opt.ajax.list.url, { ...args, ...self.opt.ajax.list.args }).done(ret => {
-          self.opt.ajax.list.onAfterLoad?.(ret);
-          d.resolve(ret.data.rows, {
-            totalCount: ret.data.count,
+        if (self.opt.ajax.list?.url)
+          jinaUtil.getJSON(self.opt.ajax.list.url, { ...args, ...self.opt.ajax.list.args }).done(ret => {
+            self.opt.ajax.list.onAfterLoad?.(ret);
+            d.resolve(ret.data.rows, {
+              totalCount: ret.data.count,
+            });
           });
-        });
-
+        else
+          d.resolve([], { totalCount: 0 });
         return d.promise();
       }
     });
