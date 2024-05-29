@@ -1,5 +1,5 @@
 export class jinaGrid {
-    static toolbarButton: (icon: any, text: any, fn: any, cfg?: {}) => {
+    static toolbarButton: (icon: any, text: any, fn: any, option?: {}) => {
         location: string;
         widget: string;
         options: {
@@ -19,9 +19,6 @@ export class jinaGrid {
     form: any;
     store: any;
     id: any;
-    wait: boolean;
-    _backData: {};
-    get backData(): {};
     clearDataSource(): void;
     setDataSource(): any;
     createPopupTemplate(formData: any): () => any;

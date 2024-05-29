@@ -2,12 +2,7 @@ import { jinaUtil } from "./jinaUtil.js"
 
 export class jinaGrid {
   opt; grid; popup; form; store; id;
-  wait = true;
 
-  _backData = {};
-  get backData() {
-    return this._backData;
-  }
   constructor(id, options) {
     this.id = id;
     this.opt = {
@@ -319,13 +314,12 @@ export class jinaGrid {
       jinaUtil.notify(ret.message, ret.success == true ? "success" : "error");
     });
   }
-  static toolbarButton = (icon, text, fn, cfg = {}) => {
+  static toolbarButton = (icon, text, fn, option = {}) => {
     return {
       location: 'after', widget: 'dxButton', options:
       {
-        icon: icon, onClick: fn, text: text
-      },
-      ...cfg
+        icon: icon, onClick: fn, text: text, ...option
+      }
     };
   };
 }
