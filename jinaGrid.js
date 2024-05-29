@@ -12,7 +12,7 @@ export class jinaGrid {
         remove: { url: "/" },
         ...options.ajax
       },
-      grid: { showRowNumber: true, ...options.grid },
+      grid: { showRowNumber: false, ...options.grid },
       popup: { title: "", width: "400", height: "auto", onBeforePopup: undefined, onAfterPopup: undefined, ...options.popup },
     };
     this.init();
@@ -250,7 +250,7 @@ export class jinaGrid {
     // _opt = { ..._opt, ...option };
     if (_opt.showRowNumber == true)
       _opt.columns = [{
-        caption: '#', width: 30,
+        caption: '#', width: 30, allowEditing: false,
         cellTemplate: (cellElement, cellInfo) => {
           cellElement.text(cellInfo.row.rowIndex + 1);
         }
