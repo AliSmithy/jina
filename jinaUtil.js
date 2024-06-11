@@ -40,6 +40,7 @@ export class jinaUtil {
         showTitle: true,
         width: opt.width,
         height: opt.height,
+        title: opt.title,
         // deferRendering: false,
         toolbarItems: [
           {
