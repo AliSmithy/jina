@@ -66,7 +66,7 @@ export class jinaGrid {
           }
         });
         if (self.opt.ajax.list?.url)
-          jinaUtil.getJSON(self.opt.ajax.list.url, { ...args, ...self.opt.ajax.list.args }).done(ret => {
+          jinaUtil.getJSON(self.opt.ajax.list.url, { ...args, ...self.opt.ajax.list.args }).then(ret => {
             self.opt.ajax.list.onAfterLoad?.(ret);
             d.resolve(ret.data.rows, {
               totalCount: ret.data.count,
@@ -95,7 +95,7 @@ export class jinaGrid {
             jinaUtil.confirm("آیا از حذف اطمینان دارید؟").done(x => {
               if (x) {
                 let data = this.grid.getSelectedRowsData()[0];
-                this.removeData(data).done(ret => {
+                this.removeData(data).then(ret => {
                   this.grid.refresh();
                   this.popup.hide();
                 });
@@ -263,7 +263,7 @@ export class jinaGrid {
         // if (this.opt.ajax.save.onBeforeSave != undefined && this.opt.ajax.save.onBeforeSave(this.popup.data) == false)
         if (this.opt.ajax.save.onBeforeSave?.(this.popup.data) == false)
           return;
-        else this.saveData(this.popup.data).done(ret => {
+        else this.saveData(this.popup.data).then(ret => {
           if (ret.success == true) {
             this.grid.refresh(true);
             this.popup.hide();
@@ -301,16 +301,17 @@ export class jinaGrid {
 
   saveData(data) {
     let self = this;
-    return jinaUtil.postJSON(this.opt.ajax.save.url, data).done(async ret => {
+    return jinaUtil.postJSON(this.opt.ajax.save.url, data).then(async ret => {
       if (self.opt.ajax.save.onAfterSave?.(ret) == false)
         return;
       jinaUtil.notify(ret.message, ret.success == true ? "success" : "error");
       if (ret.warning != undefined)
         jinaUtil.notify(ret.warning, "warning");
+      return ret;
     });
   }
   removeData(data) {
-    return jinaUtil.deleteJSON(this.opt.ajax.remove.url, data).done(async ret => {
+    return jinaUtil.deleteJSON(this.opt.ajax.remove.url, data).then(async ret => {
       jinaUtil.notify(ret.message, ret.success == true ? "success" : "error");
     });
   }

@@ -90,6 +90,43 @@ export class jinaUtil {
   static sleep = (t) => new Promise(resolve => setTimeout(resolve, t));
 
   static #generalJSON = function (type, url, data) {
+    // return new Promise((resolve, reject) => {
+    //   if (type == "GET" && !$.isEmptyObject(data)) {
+    //     for (let i in data)
+    //       if (data[i] == null)
+    //         data[i] = "";
+    //     url = url + "?" + new URLSearchParams(data);
+    //   }
+    //   fetch(url, {
+    //     method: type,
+    //     headers: { "Content-Type": "application/json" },
+    //     cache: "no-cache",
+    //     body: (type == "GET") ? null : $.isEmptyObject(data) ? null : JSON.stringify(data)
+    //   }).then(response => {
+    //     if (response.ok)
+    //       response.json().then(ret => {
+    //         resolve(ret);
+    //       });
+    //     else
+    //       throw response;
+    //   }).catch(err1 => {
+    //     err1.json().then(err => {
+    //       console.log("json catch", err);
+    //       if (err.statusCode == 409)//customError
+    //       {
+    //         jinaUtil.notify(err.message, "error");
+    //         reject(err);
+    //       }
+    //       else if (err.statusCode == 401) {//permission denied
+    //         jinaUtil.notify("خطای دسترسی; دوباره وارد شوید", "error");
+    //         setTimeout(() => { window.location = "/user/login" }, 1000);
+    //       } else
+    //         jinaUtil.notify(`خطای ناشناخته: کد ${err.statusCode}`, "error");
+    //       reject(err);
+    //     }).catch(err2 => { throw err2 });
+    //   });
+    // });
+
     return $.ajax({
       type: type,
       url: url,
