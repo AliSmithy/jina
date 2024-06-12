@@ -92,7 +92,7 @@ export class jinaGrid {
       "trash": () => {
         _toolbarItems.push(jinaGrid.toolbarButton("trash", null, function (e) {
           if (this.grid.getSelectedRowsData()[0] != undefined) {
-            jinaUtil.confirm("آیا از حذف اطمینان دارید؟").done(x => {
+            jinaUtil.confirm("آیا از حذف اطمینان دارید؟").then(x => {
               if (x) {
                 let data = this.grid.getSelectedRowsData()[0];
                 this.removeData(data).then(ret => {

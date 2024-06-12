@@ -14,10 +14,7 @@ export class jinaUtil {
   static notify(msg, type = "info") {
     DevExpress.ui.notify({
       message: msg,
-      // minHeight: 45,
-      // height: "auto",
       width: "280" | "auto",
-      // minWidth: "250" | "auto",
       type: type,
       displayTime: 7000,
       rtlEnabled: true,
@@ -58,7 +55,7 @@ export class jinaUtil {
                   return;
                 }
                 if (opt.askSave == true)
-                  jinaUtil.confirm("آیا از ذخیره اطلاعات اطمینان دارید؟").done(x => {
+                  jinaUtil.confirm("آیا از ذخیره اطلاعات اطمینان دارید؟").then(x => {
                     if (x)
                       actions.save();
                   });
@@ -89,45 +86,44 @@ export class jinaUtil {
   }
   static sleep = (t) => new Promise(resolve => setTimeout(resolve, t));
 
-  static #generalJSON = function (type, url, data) {
-    // return new Promise((resolve, reject) => {
-    //   if (type == "GET" && !$.isEmptyObject(data)) {
-    //     for (let i in data)
-    //       if (data[i] == null)
-    //         data[i] = "";
-    //     url = url + "?" + new URLSearchParams(data);
-    //   }
-    //   fetch(url, {
-    //     method: type,
-    //     headers: { "Content-Type": "application/json" },
-    //     cache: "no-cache",
-    //     body: (type == "GET") ? null : $.isEmptyObject(data) ? null : JSON.stringify(data)
-    //   }).then(response => {
-    //     if (response.ok)
-    //       response.json().then(ret => {
-    //         resolve(ret);
-    //       });
-    //     else
-    //       throw response;
-    //   }).catch(err1 => {
-    //     err1.json().then(err => {
-    //       console.log("json catch", err);
-    //       if (err.statusCode == 409)//customError
-    //       {
-    //         jinaUtil.notify(err.message, "error");
-    //         reject(err);
-    //       }
-    //       else if (err.statusCode == 401) {//permission denied
-    //         jinaUtil.notify("خطای دسترسی; دوباره وارد شوید", "error");
-    //         setTimeout(() => { window.location = "/user/login" }, 1000);
-    //       } else
-    //         jinaUtil.notify(`خطای ناشناخته: کد ${err.statusCode}`, "error");
-    //       reject(err);
-    //     }).catch(err2 => { throw err2 });
-    //   });
-    // });
+  static isEmptyObject = (o) => o == undefined || Object.keys(o).length == 0;
 
-    return $.ajax({
+  static #generalJSON = function (type, url, data) {
+    return new Promise((resolve, reject) => {
+      if (type == "GET" && !jinaUtil.isEmptyObject(data)) {
+        for (let i in data)
+          if (data[i] == null)
+            data[i] = "";
+        url = url + "?" + new URLSearchParams(data);
+      }
+      fetch(url, {
+        method: type,
+        headers: { "Content-Type": "application/json" },
+        cache: "no-cache",
+        body: (type == "GET") ? null : jinaUtil.isEmptyObject(data) ? null : JSON.stringify(data)
+      }).then(response => {
+        if (response.ok)
+          response.json().then(ret => {
+            resolve(ret);
+          });
+        else
+          throw response;
+      }).catch(reserr => {
+        reserr.json().then(err => {
+          console.log("json catch", err);
+          if (err.statusCode == 409)//customError
+            jinaUtil.notify(err.message, "error");
+          else if (err.statusCode == 401) {//permission denied
+            jinaUtil.notify("خطای دسترسی; دوباره وارد شوید", "error");
+            setTimeout(() => { window.location = "/user/login" }, 1000);
+          } else
+            jinaUtil.notify(`خطای ناشناخته: کد ${err.statusCode}`, "error");
+          reject(err);
+        });
+      });
+    });
+
+    /*return $.ajax({
       type: type,
       url: url,
       dataType: "json",
@@ -141,7 +137,7 @@ export class jinaUtil {
         setTimeout(() => { window.location = "/user/login" }, 1000);
       } else
         jinaUtil.notify(`خطای ناشناخته: کد ${err.status}`, "error");
-    });
+    });*/
   };
 
   static getJSON = (url, data) => this.#generalJSON("GET", url, data);

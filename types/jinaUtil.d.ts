@@ -4,6 +4,7 @@ export class jinaUtil {
     static setupPopup(opt: any, actions: any): any;
     static formValidate(form: any): any;
     static sleep: (t: any) => any;
+    static isEmptyObject: (t: any) => boolean;
     static getJSON: (url: any, data: any) => any;
     static postJSON: (url: any, data: any) => any;
     static deleteJSON: (url: any, data: any) => any;
