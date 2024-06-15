@@ -90,17 +90,17 @@ export class jinaUtil {
 
   static #generalJSON = function (type, url, data) {
     return new Promise((resolve, reject) => {
+      const _data = {};
       if (type == "GET" && !jinaUtil.isEmptyObject(data)) {
-        for (let i in data)
-          if (data[i] == null)
-            data[i] = "";
-        url = url + "?" + new URLSearchParams(data);
+        for (let i in data) 
+          _data[i] = data[i] == null ? "" : data[i];
+        url = url + "?" + new URLSearchParams(_data);
       }
       fetch(url, {
         method: type,
         headers: { "Content-Type": "application/json" },
         cache: "no-cache",
-        body: (type == "GET") ? null : jinaUtil.isEmptyObject(data) ? null : JSON.stringify(data)
+        body: (type == "GET") ? null : jinaUtil.isEmptyObject(_data) ? null : JSON.stringify(_data)
       }).then(response => {
         if (response.ok)
           response.json().then(ret => {
@@ -120,21 +120,21 @@ export class jinaUtil {
       });
     });
 
-    /*return $.ajax({
-      type: type,
-      url: url,
-      dataType: "json",
-      contentType: "application/json; charset=utf-8",
-      data: (type == "GET") ? data : $.isEmptyObject(data) ? null : JSON.stringify(data)
-    }).fail(err => {
-      if (err.status == 409)//customError
-        jinaUtil.notify(err.responseJSON.message, "error");
-      else if (err.status == 401) {//permission denied
-        jinaUtil.notify("خطای دسترسی; دوباره وارد شوید", "error");
-        setTimeout(() => { window.location = "/user/login" }, 1000);
-      } else
-        jinaUtil.notify(`خطای ناشناخته: کد ${err.status}`, "error");
-    });*/
+    // return $.ajax({
+    //   type: type,
+    //   url: url,
+    //   dataType: "json",
+    //   contentType: "application/json; charset=utf-8",
+    //   data: (type == "GET") ? data : $.isEmptyObject(data) ? null : JSON.stringify(data)
+    // }).fail(err => {
+    //   if (err.status == 409)//customError
+    //     jinaUtil.notify(err.responseJSON.message, "error");
+    //   else if (err.status == 401) {//permission denied
+    //     jinaUtil.notify("خطای دسترسی; دوباره وارد شوید", "error");
+    //     setTimeout(() => { window.location = "/user/login" }, 1000);
+    //   } else
+    //     jinaUtil.notify(`خطای ناشناخته: کد ${err.status}`, "error");
+    // });
   };
 
   static getJSON = (url, data) => this.#generalJSON("GET", url, data);
