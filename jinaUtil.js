@@ -108,18 +108,15 @@ export class jinaUtil {
           });
         else
           throw response;
-      }).catch(reserr => {
-        reserr.json().then(err => {
-          console.log("json catch", err);
-          if (err.statusCode == 409)//customError
-            jinaUtil.notify(err.message, "error");
-          else if (err.statusCode == 401) {//permission denied
-            jinaUtil.notify("خطای دسترسی; دوباره وارد شوید", "error");
-            setTimeout(() => { window.location = "/user/login" }, 1000);
-          } else
-            jinaUtil.notify(`خطای ناشناخته: کد ${err.statusCode}`, "error");
-          reject(err);
-        });
+      }).catch(err => {
+        if (err.status == 401) {//permission denied
+          jinaUtil.notify("خطای دسترسی; دوباره وارد شوید", "error");
+          setTimeout(() => { window.location = "/user/login" }, 1000);
+        } else if (err.status == 409)//customError
+          err.json().then(jsonerr => jinaUtil.notify(jsonerr.message, "error"));
+        else
+          jinaUtil.notify(`خطای ناشناخته: ${err.status ?? ""}`, "error");
+        reject(err);
       });
     });
 
