@@ -90,9 +90,9 @@ export class jinaUtil {
 
   static #generalJSON = function (type, url, data) {
     return new Promise((resolve, reject) => {
-      const _data = {};
+      let _data = type == "GET" || !data ? {} : data;
       if (type == "GET" && !jinaUtil.isEmptyObject(data)) {
-        for (let i in data) 
+        for (let i in data)
           _data[i] = data[i] == null ? "" : data[i];
         url = url + "?" + new URLSearchParams(_data);
       }
