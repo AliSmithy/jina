@@ -46,13 +46,34 @@ export class jinaDX {
       }
     }
     static jinaLookup(title, query, options = {}) {
+      if (options.defaultValue) {
+        const _onSelectionChanged = options.onSelectionChanged;
+        const _onInitialized = options.onInitialized;
+        options.onSelectionChanged = e => {
+          _onSelectionChanged?.(e);
+          if (e.selectedItem?.Title == undefined)
+            localStorage.removeItem(options.editorOptions.defaultValue.key);
+          else
+            localStorage.setItem(options.defaultValue.key, e.selectedItem?.Title);
+          const fn = (check, code) => setTimeout(() => { check != null && !check() ? fn(check, code) : code?.(e) }, 100);
+          fn(options.defaultValue.check, options.defaultValue.code);
+        };
+        options.onInitialized = e => {
+          _onInitialized?.(e);
+          const _y = localStorage.getItem(options.defaultValue.key);
+          if (_y)
+            e.component.option("value", _y);
+        };
+        options.dataSource = { byKey: key => { return { ID: key, Title: key } } };
+      }
       return {
         location: 'after',
         widget: 'dxSelectBox',
         options: {
           placeholder: title,
-          displayExpr: "Title",
           displayValue: "ID",
+          displayExpr: "Title",
+          ...options,
           dataSource: new DevExpress.data.CustomStore({
             key: "ID",
             load: function () {
@@ -64,11 +85,11 @@ export class jinaDX {
                   d.reject();
               });
               return d.promise();
-            }
+            },
+            ...options.dataSource
           }),
-          ...options
         }
-      }
+      };
     }
     static jinaDropDown(title, query, type, options = {}) {
       return {
@@ -148,6 +169,26 @@ export class jinaDX {
     static _jinaLookupBase(editorType, title, query, options) {
       if (!options.editorOptions)
         options.editorOptions = { dataSource: {} };
+      if (options.editorOptions.defaultValue) {
+        const _onSelectionChanged = options.editorOptions.onSelectionChanged;
+        const _onInitialized = options.editorOptions.onInitialized;
+        options.editorOptions.onSelectionChanged = e => {
+          _onSelectionChanged?.(e);
+          if (e.selectedItem?.Title == undefined)
+            localStorage.removeItem(options.editorOptions.defaultValue.key);
+          else
+            localStorage.setItem(options.editorOptions.defaultValue.key, e.selectedItem?.Title);
+          const fn = (check, code) => setTimeout(() => { check != null && !check() ? fn(check, code) : code?.(e) }, 100);
+          fn(options.editorOptions.defaultValue.check, options.editorOptions.defaultValue.code);
+        };
+        options.editorOptions.onInitialized = e => {
+          _onInitialized?.(e);
+          const _y = localStorage.getItem(options.editorOptions.defaultValue.key);
+          if (_y)
+            e.component.option("value", _y);
+        };
+        options.editorOptions.dataSource = { byKey: key => { return { ID: key, Title: key } } };
+      }
       const _lookup = {
         editorType: editorType,
         ...options,
