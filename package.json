@@ -1,6 +1,6 @@
 {
   "name": "jina",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "this package is for my own use at this time",
   "types": "jina.d.ts",
   "scripts": {

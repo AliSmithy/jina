@@ -50,22 +50,30 @@ export class jinaDX {
         const _onSelectionChanged = options.onSelectionChanged;
         const _onInitialized = options.onInitialized;
         options.onSelectionChanged = e => {
-          _onSelectionChanged?.(e);
           if (e.selectedItem?.Title == undefined)
-            localStorage.removeItem(options.editorOptions.defaultValue.key);
+            localStorage.removeItem(options.defaultValue.key);
           else
-            localStorage.setItem(options.defaultValue.key, e.selectedItem?.Title);
-          const fn = (check, code) => setTimeout(() => { check != null && !check() ? fn(check, code) : code?.(e) }, 100);
-          fn(options.defaultValue.check, options.defaultValue.code);
+            localStorage.setItem(options.defaultValue.key, JSON.stringify({ ID: e.selectedItem?.ID, Title: e.selectedItem?.Title }));
+          // const fn = parent => setTimeout(() => { parent != null && parent == undefined ? fn(parent) : _onSelectionChanged?.(e) }, 100);
+          // fn(options.defaultValue.parent);
+          setTimeout(() => { _onSelectionChanged?.(e) }, 100);
         };
         options.onInitialized = e => {
           _onInitialized?.(e);
-          const _y = localStorage.getItem(options.defaultValue.key);
-          if (_y)
-            e.component.option("value", _y);
+          let _v = JSON.parse(localStorage.getItem(options.defaultValue.key));
+          if (_v)
+            e.component.option("value", _v.ID);
         };
-        options.dataSource = { byKey: key => { return { ID: key, Title: key } } };
-      }
+        options.dataSource = {
+          byKey: key => {
+            let _v = JSON.parse(localStorage.getItem(options.defaultValue.key));
+            if (_v)
+              return { ID: _v.ID, Title: _v.Title }
+            else
+              return { ID: key, Title: key }
+          }
+        };
+      }//if (options.defaultValue)...
       return {
         location: 'after',
         widget: 'dxSelectBox',
@@ -173,21 +181,29 @@ export class jinaDX {
         const _onSelectionChanged = options.editorOptions.onSelectionChanged;
         const _onInitialized = options.editorOptions.onInitialized;
         options.editorOptions.onSelectionChanged = e => {
-          _onSelectionChanged?.(e);
           if (e.selectedItem?.Title == undefined)
             localStorage.removeItem(options.editorOptions.defaultValue.key);
           else
-            localStorage.setItem(options.editorOptions.defaultValue.key, e.selectedItem?.Title);
-          const fn = (check, code) => setTimeout(() => { check != null && !check() ? fn(check, code) : code?.(e) }, 100);
-          fn(options.editorOptions.defaultValue.check, options.editorOptions.defaultValue.code);
+            localStorage.setItem(options.editorOptions.defaultValue.key, JSON.stringify({ ID: e.selectedItem?.ID, Title: e.selectedItem?.Title }));
+          // const fn = parent => setTimeout(() => { parent != null && parent == undefined ? fn(parent) : _onSelectionChanged?.(e) }, 100);
+          // fn(options.editorOptions.defaultValue.parent);
+          setTimeout(() => { _onSelectionChanged?.(e) }, 100);
         };
         options.editorOptions.onInitialized = e => {
           _onInitialized?.(e);
-          const _y = localStorage.getItem(options.editorOptions.defaultValue.key);
-          if (_y)
-            e.component.option("value", _y);
+          let _v = JSON.parse(localStorage.getItem(options.editorOptions.defaultValue?.key));
+          if (_v)
+            e.component.option("value", _v.ID);
         };
-        options.editorOptions.dataSource = { byKey: key => { return { ID: key, Title: key } } };
+        options.editorOptions.dataSource = {
+          byKey: key => {
+            let _v = JSON.parse(localStorage.getItem(options.editorOptions.defaultValue.key));
+            if (_v)
+              return { ID: _v.ID, Title: _v.Title }
+            else
+              return { ID: key, Title: key }
+          }
+        };
       }
       const _lookup = {
         editorType: editorType,
