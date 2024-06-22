@@ -35,6 +35,34 @@ export class jinaDX {
         return _treeView;
       }
   }
+  static #lookupDefaultValue = editor => {
+    const _onSelectionChanged = editor.onSelectionChanged;
+    const _onInitialized = editor.onInitialized;
+    editor.onSelectionChanged = e => {
+      if (e.selectedItem?.Title == undefined)
+        localStorage.removeItem(editor.defaultValueKey);
+      else
+        localStorage.setItem(editor.defaultValueKey, JSON.stringify({ ID: e.selectedItem?.ID, Title: e.selectedItem?.Title }));
+      // const fn = parent => setTimeout(() => { parent != null && parent == undefined ? fn(parent) : _onSelectionChanged?.(e) }, 100);
+      // fn(editor.defaultValueKey.parent);
+      setTimeout(() => { _onSelectionChanged?.(e) }, 100);
+    };
+    editor.onInitialized = e => {
+      _onInitialized?.(e);
+      let _v = JSON.parse(localStorage.getItem(editor.defaultValueKey));
+      if (_v)
+        e.component.option("value", _v.ID);
+    };
+    editor.dataSource = {
+      byKey: key => {
+        let _v = JSON.parse(localStorage.getItem(editor.defaultValueKey));
+        if (_v)
+          return { ID: _v.ID, Title: _v.Title }
+        else
+          return { ID: key, Title: key }
+      }
+    };
+  }
   static widget = class {
     static jinaGeneral(widget, options = {}) {
       return {
@@ -46,34 +74,8 @@ export class jinaDX {
       }
     }
     static jinaLookup(title, query, options = {}) {
-      if (options.defaultValue) {
-        const _onSelectionChanged = options.onSelectionChanged;
-        const _onInitialized = options.onInitialized;
-        options.onSelectionChanged = e => {
-          if (e.selectedItem?.Title == undefined)
-            localStorage.removeItem(options.defaultValue.key);
-          else
-            localStorage.setItem(options.defaultValue.key, JSON.stringify({ ID: e.selectedItem?.ID, Title: e.selectedItem?.Title }));
-          // const fn = parent => setTimeout(() => { parent != null && parent == undefined ? fn(parent) : _onSelectionChanged?.(e) }, 100);
-          // fn(options.defaultValue.parent);
-          setTimeout(() => { _onSelectionChanged?.(e) }, 100);
-        };
-        options.onInitialized = e => {
-          _onInitialized?.(e);
-          let _v = JSON.parse(localStorage.getItem(options.defaultValue.key));
-          if (_v)
-            e.component.option("value", _v.ID);
-        };
-        options.dataSource = {
-          byKey: key => {
-            let _v = JSON.parse(localStorage.getItem(options.defaultValue.key));
-            if (_v)
-              return { ID: _v.ID, Title: _v.Title }
-            else
-              return { ID: key, Title: key }
-          }
-        };
-      }//if (options.defaultValue)...
+      if (options.defaultValueKey)
+        jinaDX.#lookupDefaultValue(options);
       return {
         location: 'after',
         widget: 'dxSelectBox',
@@ -177,34 +179,8 @@ export class jinaDX {
     static _jinaLookupBase(editorType, title, query, options) {
       if (!options.editorOptions)
         options.editorOptions = { dataSource: {} };
-      if (options.editorOptions.defaultValue) {
-        const _onSelectionChanged = options.editorOptions.onSelectionChanged;
-        const _onInitialized = options.editorOptions.onInitialized;
-        options.editorOptions.onSelectionChanged = e => {
-          if (e.selectedItem?.Title == undefined)
-            localStorage.removeItem(options.editorOptions.defaultValue.key);
-          else
-            localStorage.setItem(options.editorOptions.defaultValue.key, JSON.stringify({ ID: e.selectedItem?.ID, Title: e.selectedItem?.Title }));
-          // const fn = parent => setTimeout(() => { parent != null && parent == undefined ? fn(parent) : _onSelectionChanged?.(e) }, 100);
-          // fn(options.editorOptions.defaultValue.parent);
-          setTimeout(() => { _onSelectionChanged?.(e) }, 100);
-        };
-        options.editorOptions.onInitialized = e => {
-          _onInitialized?.(e);
-          let _v = JSON.parse(localStorage.getItem(options.editorOptions.defaultValue?.key));
-          if (_v)
-            e.component.option("value", _v.ID);
-        };
-        options.editorOptions.dataSource = {
-          byKey: key => {
-            let _v = JSON.parse(localStorage.getItem(options.editorOptions.defaultValue.key));
-            if (_v)
-              return { ID: _v.ID, Title: _v.Title }
-            else
-              return { ID: key, Title: key }
-          }
-        };
-      }
+      if (options.editorOptions.defaultValueKey) 
+        jinaDX.#lookupDefaultValue(options.editorOptions);
       const _lookup = {
         editorType: editorType,
         ...options,

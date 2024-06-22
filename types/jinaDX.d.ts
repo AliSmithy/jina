@@ -14,10 +14,10 @@ export class jinaDX {
             location: string;
             widget: string;
             options: {
-                placeholder: any;
-                displayExpr: string;
-                displayValue: string;
                 dataSource: any;
+                placeholder: any;
+                displayValue: string;
+                displayExpr: string;
             };
         };
         jinaDropDown(title: any, query: any, type: any, options?: {}): {
