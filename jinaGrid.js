@@ -117,6 +117,9 @@ export class jinaGrid {
         _toolbarItems.push(jinaGrid.toolbarButton("save", null, null));
       }
     };
+    if (option.export?.enabled == true)
+      _toolbarItems.push({ name: "exportButton", location: 'before' });
+
     for (const prop of option.toolbarItems) {
       if (i[prop] != null)
         i[prop]();
@@ -124,6 +127,7 @@ export class jinaGrid {
         _toolbarItems.push(prop);
       }
     }
+
     if (option.groupPanel?.visible)
       _toolbarItems.push("groupPanel");
     let _opt = {
@@ -186,10 +190,23 @@ export class jinaGrid {
       remoteOperations: {
         paging: false,//طبق داکیومنت اگر این گزینه تنظیم باشد حتما باید فیلترینگ و سورتینگ هم تنظیم باشند
         filtering: false,
-        // sorting: false,
-        // grouping: false
       },
-      // remoteOperations: false,
+      onExporting: function (e) {
+        var workbook = new ExcelJS.Workbook();
+        var worksheet = workbook.addWorksheet('جدول');
+        DevExpress.excelExporter.exportDataGrid({
+          worksheet: worksheet,
+          component: e.component,
+          customizeCell: function (options) {
+            options.excelCell.font = { name: 'Arial', size: 12 };
+            options.excelCell.alignment = { horizontal: 'left' };
+          }
+        }).then(function () {
+          workbook.xlsx.writeBuffer().then(function (buffer) {
+            saveAs(new Blob([buffer], { type: 'application/octet-stream' }), 'export.xlsx');
+          });
+        });
+      },
       ...option,
       groupPanel: {
         emptyPanelText: "ستون‌ها را اینجا بیاندازید",
