@@ -47,7 +47,8 @@ export class jinaGrid {
       // },
       ...this.opt.ajax.list.storeConfig,
       load(loadOptions) {
-        self.opt.ajax.list.onBeforeLoad?.();
+        if (self.opt.ajax.list.onBeforeLoad?.() == false)
+          return;    
         const d = $.Deferred();
         const args = {};
         [
