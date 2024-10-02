@@ -315,7 +315,14 @@ export class jinaDX {
         else
           _opt.validationRules = [{ type: 'required', message: jinaDX.requiredText }]
       }
-      return jinaDX.editor.jinaRadioGroup(title, { dataField: fieldName, editorOptions: { items: items }, ...options })
+      return jinaDX.editor.jinaRadioGroup(title, {
+        dataField: fieldName,
+        ..._opt, 
+        editorOptions: {
+          items: items,
+          ...options.editorOptions
+        }
+      });
     }
     static jinaDateBox(title, options = { editorOptions: {} }) {
       const _validation = [
