@@ -32,6 +32,7 @@ export class jinaGrid {
         formData: formData,
         showColonAfterLabel: true,
         items: this.opt.popup.items,
+        ...this.opt.popup.form
       });
       this.form = _formDiv.dxForm("instance");
       return _formDiv;
@@ -303,6 +304,7 @@ export class jinaGrid {
           formData: _data,
           showColonAfterLabel: true,
           items: this.opt.popup.items,
+          ...this.opt.popup.form
         });
         this.form = _formDiv.dxForm("instance");
         this.popup.form = this.form;
