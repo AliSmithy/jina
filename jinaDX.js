@@ -140,16 +140,15 @@ export class jinaDX {
       }
     }
     static jinaTextBox(title, options = { editorOptions: {} }) {
-      var _opt = options;
-      if (_opt.required) {
-        if (_opt.validationRules)
-          _opt.validationRules.push({ type: 'required', message: jinaDX.requiredText });
+      if (options.required) {
+        if (options.validationRules)
+          options.validationRules.push({ type: 'required', message: jinaDX.requiredText });
         else
-          _opt.validationRules = [{ type: 'required', message: jinaDX.requiredText }]
+          options.validationRules = [{ type: 'required', message: jinaDX.requiredText }]
       }
       return {
         editorType: 'dxTextBox',
-        ..._opt,
+        ...options,
         editorOptions: {
           rtlEnabled: false,
           ...options.editorOptions,
@@ -179,7 +178,7 @@ export class jinaDX {
     static _jinaLookupBase(editorType, title, query, options) {
       if (!options.editorOptions)
         options.editorOptions = { dataSource: {} };
-      if (options.editorOptions.defaultValueKey) 
+      if (options.editorOptions.defaultValueKey)
         jinaDX.#lookupDefaultValue(options.editorOptions);
       const _lookup = {
         editorType: editorType,
@@ -227,12 +226,11 @@ export class jinaDX {
       return jinaDX.editor._jinaLookupBase('dxSelectBox', title, query, options);
     }
     static jinaLookup2(title, fieldName, filterItem, options = {}) {
-      var _opt = options;
-      if (_opt.required) {
-        if (_opt.validationRules)
-          _opt.validationRules.push({ type: 'required', message: jinaDX.requiredText });
+      if (options.required) {
+        if (options.validationRules)
+          options.validationRules.push({ type: 'required', message: jinaDX.requiredText });
         else
-          _opt.validationRules = [{ type: 'required', message: jinaDX.requiredText }]
+          options.validationRules = [{ type: 'required', message: jinaDX.requiredText }];
       }
       return jinaDX.editor.jinaLookup(title, filterItem.params, {
         dataField: fieldName,
@@ -277,12 +275,11 @@ export class jinaDX {
       }
     }
     static jinaNumberBox(title, options = { editorOptions: {} }) {
-      var _opt = options;
-      if (_opt.required) {
-        if (_opt.validationRules)
-          _opt.validationRules.push({ type: 'required', message: jinaDX.requiredText });
+      if (options.required) {
+        if (options.validationRules)
+          options.validationRules.push({ type: 'required', message: jinaDX.requiredText });
         else
-          _opt.validationRules = [{ type: 'required', message: jinaDX.requiredText }]
+          options.validationRules = [{ type: 'required', message: jinaDX.requiredText }]
       }
       return {
         editorType: 'dxNumberBox',
@@ -308,17 +305,22 @@ export class jinaDX {
       }
     }
     static jinaRadioGroup2(title, fieldName, items, options = {}) {
-      var _opt = options;
-      if (_opt.required) {
-        if (_opt.validationRules)
-          _opt.validationRules.push({ type: 'required', message: jinaDX.requiredText });
+      if (options.required) {
+        const _customRequired = {
+          type: 'custom', message: jinaDX.requiredText,
+          validationCallback(e) { return e.value != undefined }
+        };
+        if (options.validationRules)
+          options.validationRules.push(_customRequired);
         else
-          _opt.validationRules = [{ type: 'required', message: jinaDX.requiredText }]
+          options.validationRules = [_customRequired];
       }
       return jinaDX.editor.jinaRadioGroup(title, {
         dataField: fieldName,
-        ..._opt, 
+        ...options,
         editorOptions: {
+          validationMessagePosition: "right",
+          validationMessageMode: "always",
           items: items,
           ...options.editorOptions
         }
@@ -617,16 +619,15 @@ export class jinaDX {
       };
     }
     static jinaTextArea(title, options = { editorOptions: {} }) {
-      var _opt = options;
-      if (_opt.required) {
-        if (_opt.validationRules)
-          _opt.validationRules.push({ type: 'required', message: jinaDX.requiredText });
+      if (options.required) {
+        if (options.validationRules)
+          options.validationRules.push({ type: 'required', message: jinaDX.requiredText });
         else
-          _opt.validationRules = [{ type: 'required', message: jinaDX.requiredText }]
+          options.validationRules = [{ type: 'required', message: jinaDX.requiredText }]
       }
       return {
         editorType: 'dxTextArea',
-        ..._opt,
+        ...options,
         editorOptions: {
           rtlEnabled: false,
           ...options.editorOptions,
