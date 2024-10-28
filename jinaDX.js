@@ -1,5 +1,7 @@
 import { jinaGrid } from "./jinaGrid.js";
 import { jinaUtil } from "./jinaUtil.js";
+import { nedaCalendar } from "/js/nedaCalendar/nedaCalendar.js";
+
 export class jinaDX {
   static requiredText = "وارد نشده";
   static DropDownTypes = {
@@ -339,7 +341,7 @@ export class jinaDX {
           type: "required",
           message: "اجباری"
         });
-      return {
+      let _c = {
         editorType: 'dxTextBox',
         validationRules: _validation,
         ...options,
@@ -349,10 +351,31 @@ export class jinaDX {
           showDropDownButton: false,
           maskRules: { x: /1/, z: /[3-4]/, y: /\d/, M: /[0-1]/, m: /\d/, D: /[0-3]/, d: /\d/ },
           maskInvalidMessage: "تاریخ اشتباه است",
+          onInitialized(e) { _c.dateBox = e.component; },
+          buttons: [{
+            name: 'password',
+            location: 'after',
+            options: {
+              icon: 'event',
+              stylingMode: 'text',
+              onClick(e) {
+                const _input = _c.dateBox.element().find("input[type='text']");
+                const _pop = document.createElement("div");
+                _pop.className = "ndCal";
+                document.body.append(_pop);
+                Popper.createPopper(_input[0], _pop);
+                let cal = new nedaCalendar(_pop, _c.dateBox.option("text"));
+                cal.addEventListener("onSelectDate", event => {
+                  _c.dateBox.option("value", event.detail.replace(/-/g, ""));
+                });
+              },
+            },
+          }],
           ...options.editorOptions
         },
         label: { text: title, alignment: "left" }
-      }
+      };
+      return _c;
     }
     static jinaDateBox_old(title, options = { editorOptions: {} }) {
       return {
