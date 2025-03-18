@@ -88,7 +88,7 @@ export class jinaUtil {
 
   static isEmptyObject = (o) => o == undefined || Object.keys(o).length == 0;
 
-  static #generalJSON = function (type, url, data) {
+  static #generalJSON = function (type, url, data, cfg) {
     return new Promise((resolve, reject) => {
       let _data = type == "GET" || !data ? {} : data;
       if (type == "GET" && !jinaUtil.isEmptyObject(data)) {
@@ -100,7 +100,8 @@ export class jinaUtil {
         method: type,
         headers: { "Content-Type": "application/json" },
         cache: "no-cache",
-        body: (type == "GET") ? null : jinaUtil.isEmptyObject(_data) ? null : JSON.stringify(_data)
+        body: (type == "GET") ? null : jinaUtil.isEmptyObject(_data) ? null : JSON.stringify(_data),
+        ...cfg
       }).then(response => {
         if (response.ok)
           response.json().then(ret => {
@@ -119,35 +120,20 @@ export class jinaUtil {
         reject(err);
       });
     });
-
-    // return $.ajax({
-    //   type: type,
-    //   url: url,
-    //   dataType: "json",
-    //   contentType: "application/json; charset=utf-8",
-    //   data: (type == "GET") ? data : $.isEmptyObject(data) ? null : JSON.stringify(data)
-    // }).fail(err => {
-    //   if (err.status == 409)//customError
-    //     jinaUtil.notify(err.responseJSON.message, "error");
-    //   else if (err.status == 401) {//permission denied
-    //     jinaUtil.notify("خطای دسترسی; دوباره وارد شوید", "error");
-    //     setTimeout(() => { window.location = "/user/login" }, 1000);
-    //   } else
-    //     jinaUtil.notify(`خطای ناشناخته: کد ${err.status}`, "error");
-    // });
   };
 
-  static getJSON = (url, data) => this.#generalJSON("GET", url, data);
-  static postJSON = (url, data) => this.#generalJSON("POST", url, data);
-  static deleteJSON = (url, data) => this.#generalJSON("DELETE", url, data);
+  static getJSON = (url, data, cfg) => this.#generalJSON("GET", url, data, cfg);
+  static postJSON = (url, data, cfg) => this.#generalJSON("POST", url, data, cfg);
+  static deleteJSON = (url, data, cfg) => this.#generalJSON("DELETE", url, data, cfg);
 
-  static postMultipart = function (url, data) {
+  static postMultipart = function (url, data, cfg) {
     return $.ajax({
       type: "POST",
       url: url,
       contentType: false,
       processData: false,
-      data: data
+      data: data,
+      ...cfg
     }).fail(err => {
       if (err.status == 409)//customError
         jinaUtil.notify(err.responseJSON.message, "error");
