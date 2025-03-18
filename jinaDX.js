@@ -671,5 +671,24 @@ export class jinaDX {
     static jinaTagBox(title, query, options) {
       return jinaDX.editor._jinaLookupBase('dxTagBox', title, query, { ...options, editorOptions: { ...options.editorOptions, selectAllText: "همه" } });
     }
+    static jinaProgressBar(options = { editorOptions: {} }) {
+      return {
+        editorType: 'dxProgressBar',
+        ...options,
+        editorOptions: {
+          min: 0, max: 100, value: 0, width: '100%', elementAttr: { 'aria-label': 'Progress Bar' },
+          statusFormat(ratio) {
+            if (ratio == 0)
+              return "";
+            else
+              return `ارسال: ${parseInt(ratio * 100)}%`;
+          },
+          onComplete(e) {
+            e.element.addClass('complete');
+          },
+          ...options.editorOptions
+        },
+      }
+    }
   }
 }
